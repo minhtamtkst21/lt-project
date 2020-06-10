@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title>MASTER</title>
+        <link href="/css/styles.css" type="text/css" rel="stylesheet" />
+        <link href="/css/styles.css" type="text/css" rel="stylesheet" />
+        <script>
+          function details(id, name, pass, per) {
+            document.getElementById("txtID").value = id;
+            document.getElementById("txtName").value = name;
+            document.getElementById("txtPass").value = pass;
+            document.getElementById("txtPer").value = per;
+            document.getElementById("btnReset").style.display = "inline";
+            document.getElementById("btnUpdate").style.display = "inline";
+            document.getElementById("btnDelete").style.display = "inline";
+          }
+        </script>
+    </head>
+    <body class="admin">
+        <%- include('./_menu.ejs') %>
+        <div class="align-center">
+          <h2 class="text-center"><a href="./home">MASTER HOME</a></h2>
+        </div>
+        <div class="float-left">
+            <h2 class="text-center">ADMIN LIST</h2>
+            <table class="datatable" border="1">
+                <tr class="datatable">
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Permission</th>
+                    <th>Password</th>
+                </tr>
+                  <%  for (var item of admin) {  %>
+                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.username%>', '<%=item.password%>', '<%=item.permission%>')">
+                    <td><%=item._id%></td>
+                    <td><%=item.username%></td>
+                    <td><%=item.permission%></td>
+                    <td>hiden</td>
+                  </tr>
+                  <%  } %>
+                </table>
+              </div>
+              <div class="inline" style="width: 40px"></div>
+              <div class="float-right">
+                <h2 class="text-center">ADMIN DETAIL</h2>
+                <form method="POST">
+                  <table>
+                    <tr>
+                      <td>Id</td>
+                      <td><input type="text" id="txtID" name="txtID" readonly /></td>
+                    </tr>
+                    <tr>
+                      <td>Username</td>
+                      <td><input type="text" id="txtName" name="txtName" required />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Password</td>
+                      <td><input type="password" id="txtPass" name="txtPass" required />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Permission</td>
+                      <td><input type="number" id="txtPer" name="txtPer" required max="1" min="-1" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <input type="submit" formaction="./addadmin" value="ADD NEW" />
+                        <input type="submit" formaction="./resetadmin" value="RESET" id="btnReset" style="display: none" />
+                        <input type="submit" formaction="./updateadmin" value="UPDATE" id="btnUpdate" style="display: none">
+                        <input type="submit" formaction="./deleteadmin" value="DELETE" id="btnDelete" style="display: none" onclick="return confirm('ARE YOU SURE?')" />
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <div class="float-clear"></div>
+            </body>
+            </html>

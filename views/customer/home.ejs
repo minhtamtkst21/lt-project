@@ -1,0 +1,62 @@
+<html>
+
+<head>
+  <link href="/css/styles.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body class="customer">
+  <%- include('./_menu.ejs') %>
+  <%- include('./_inform.ejs') %>
+  <div class="align-center">
+    <h2 class="text-center">NEW PRODUCTS</h2>
+    <%  for (var prod of newprods) { %>
+    <div class="inline">
+      <figure>
+        <a href="./details?id=<%=prod._id%>"><img src="data:image/jpg;base64,<%=prod.image%>" width="150px" height="150px" /></a>
+        <figcaption class="text-center"><%=prod.name%><br />Price: <%=prod.price%></figcaption>
+      </figure>
+    </div>
+    <%  } %>
+  </div>
+  <%  if (hotprods) { %>
+  <div class="align-center">
+    <h2 class="text-center">HOT PRODUCTS</h2>
+    <%  for (var prod of hotprods) { %>
+    <div class="inline">
+      <figure>
+        <a href="./details?id=<%=prod._id%>"><img src="data:image/jpg;base64,<%=prod.image%>" width="300px" height="300px" /></a>
+        <figcaption class="text-center"><%=prod.name%><br />Price: <%=prod.price%></figcaption>
+      </figure>
+    </div>
+    <%  } %>
+  </div>
+  <%  } %>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      xfbml            : true,
+      version          : 'v7.0'
+    });
+  };
+
+  (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<!-- Your Chat Plugin code -->
+<div class="fb-customerchat"
+  attribution=setup_tool
+  page_id="110945853983402"
+theme_color="#fa3c4c"
+logged_in_greeting="Xin chào, tui có thể giúp gì cho bạn?"
+logged_out_greeting="Xin chào, tui có thể giúp gì cho bạn?">
+</div>
+</body>
+
+</html>

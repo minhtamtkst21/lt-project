@@ -1,0 +1,34 @@
+<html>
+
+<head>
+  <link href="/css/styles.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body class="customer">
+  <%- include('./_menu.ejs') %>
+  <div class="align-center">
+    <h2 class="text-center">MY PROFILE</h2>
+    <form action="./myprofile" method="POST">
+      <table class="align-center">
+        <tr>
+          <td>Username</td>
+          <td><input type="text" name="txtUsername" value="<%=session.admin.username%>" readonly /></td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td><input type="password" name="txtPassword" value="<%=session.admin.password%>" required /></td>
+        </tr>
+        <tr>
+          <td>Permission</td>
+          <td><input type="text" name="txtPer" value="<%=session.admin.permission%>" readonly></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="UPDATE" /></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</body>
+
+</html>
