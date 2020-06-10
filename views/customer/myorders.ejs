@@ -40,16 +40,19 @@
         <th>No.</th>
         <th>Prod.ID</th>
         <th>Prod.name</th>
+        <th>Shop</th>
         <th>Image</th>
         <th>Price</th>
         <th>Quantity</th>
         <th>Amount</th>
+        
       </tr>
       <%  for (var [i, item] of order.items.entries()) {  %>
       <tr class="datatable">
         <td><%=(i+1)%></td>
         <td><%=item.product._id%></td>
         <td><%=item.product.name%></td>
+        <td><%=item.product.admin%></td>
         <td><img src="data:image/jpg;base64,<%=item.product.image%>" width="70" height="70" /></td>
         <td><%=item.product.price%></td>
         <td><%=item.quantity%></td>
