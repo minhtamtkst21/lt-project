@@ -43,10 +43,6 @@ var CustomerDAO = {
     var db = await client.getDB();
     var result = await db.collection("customers").updateOne(query, newvalues);
     return result.result.nModified > 0 ? true : false;
-  },
-  async checkbuyproduct(admin, product){
-    var adminquery = { _id: ObjectId(admin._id)};
-    var productquery = { _id: ObjectId(product._id)}
   }
 };
 module.exports = CustomerDAO;

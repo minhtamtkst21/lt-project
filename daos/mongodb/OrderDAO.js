@@ -43,6 +43,15 @@ var OrderDAO = {
     var db = await client.getDB();
     var result = await db.collection("orders").updateOne(query, newvalues);
     return result.result.nModified > 0 ? true : false;
+  },
+  async check(custId, prodId){
+    var query = { 'customer._id': ObjectId(custId),'items.product._id': ObjectId(prodId) };
+    var db = await client.getDB();
+    var orders = await db.collection("orders").find(query).toArray();
+    if (orders.length > 0){
+      return true;
+    }
+    return false;
   }
 };
 module.exports = OrderDAO;

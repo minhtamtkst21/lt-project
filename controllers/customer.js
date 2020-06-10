@@ -11,6 +11,8 @@ var ProductDAO = require(pathDAO + "/ProductDAO.js");
 var CustomerDAO = require(pathDAO + "/CustomerDAO.js");
 var OrderDAO = require(pathDAO + "/OrderDAO.js");
 var AdminDAO = require(pathDAO + "/AdminDAO.js");
+var CommentDAO = require(pathDAO + "/CommentDAO.js");
+var QuestionDAO = require(pathDAO + "/QuestionDAO.js");
 // routes
 router.get(['/', '/home'], async function (req, res) {
   var categories = await CategoryDAO.selectAll();
@@ -35,7 +37,14 @@ router.get('/details', async function (req, res) {
   var categories = await CategoryDAO.selectAll();
   var _id = req.query.id; // /details?id=XXX
   var product = await ProductDAO.selectByID(_id);
-  res.render('../views/customer/details.ejs', { prod: product, cats: categories });
+  var comment = await CommentDAO.SelectAll();
+  var question = await QuestionDAO.SelectAll();
+  if (req.session.customer){
+  var check = await OrderDAO.check(req.session.customer._id, _id);
+  } else {
+    var check = false;
+  }
+  res.render('../views/customer/details.ejs', { prod: product, cats: categories, comments: comment, questions: question, check: check });
 });
 // customer
 router.get('/signup', async function (req, res) {
@@ -141,7 +150,7 @@ router.get('/mycart', async function (req, res) {
     var total = MyUtil.getTotal(req.session.mycart);
     res.render('../views/customer/mycart.ejs', { total: total, cates: categories });
   } else {
-    res.redirect('./home');
+    MyUtil.showAlertAndRedirect(res, 'NO PRODUCT IN CART', './home');
   }
 });
 router.post('/add2cart', async function (req, res) {
@@ -203,4 +212,5 @@ router.get('/becomeadmin', async function (req,res) {
     MyUtil.showAlertAndRedirect(res, 'FAILED!', './myprofile');
   }
 });
+
 module.exports = router;

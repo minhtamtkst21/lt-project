@@ -13,7 +13,7 @@
     <div class="inline">
       <figure>
         <a href="./details?id=<%=prod._id%>"><img src="data:image/jpg;base64,<%=prod.image%>" width="150px" height="150px" /></a>
-        <figcaption class="text-center"><%=prod.name%><br />Price: <%=prod.price%></figcaption>
+        <a href="./details?id=<%=prod._id%>""><figcaption class="text-center"><%=prod.name%><br />Price: <%=prod.price%></figcaption></a>
       </figure>
     </div>
     <%  } %>
