@@ -15,6 +15,8 @@ var OrderDAO = require(pathDAO + "/OrderDAO.js");
 var CategoryDAO = require(pathDAO + "/CategoryDAO.js");
 var ProductDAO = require(pathDAO + "/ProductDAO.js");
 var CustomerDAO = require(pathDAO + "/CustomerDAO.js");
+var CommentDAO = require(pathDAO + "/CommentDAO.js");
+var QuestionDAO = require(pathDAO + "/QuestionDAO.js");
 // routes
 router.get(['/', '/home'], function (req, res) {
   if (req.session.admin) {
@@ -32,8 +34,12 @@ router.post('/login', async function (req, res) {
   var password = req.body.txtPassword;
   var admin = await AdminDAO.selectByUsernameAndPassword(username, password);
   if (admin) {
+    if (admin.permission !== "-1"){
     req.session.admin = admin;
     res.redirect('./home');
+    } else {
+      MyUtil.showAlertAndRedirect(res, 'NO PERMISSION!', './login');
+    }
   } else {
     MyUtil.showAlertAndRedirect(res, 'LOGIN FAILED!', './login');
   }
@@ -208,5 +214,14 @@ router.post('/myprofile', async function (req, res) {
     }
   }
   MyUtil.showAlertAndRedirect(res, 'SORRY BABY!', './myprofile');
+});
+// comment
+router.get('/listcomment', function (req,res){
+  
+  res.render('../views/admin/listcomment.ejs');
+});
+// question
+router.get('/listquestion', function (req,res){
+  res.render('../views/admin/listquestion.ejs');
 });
 module.exports = router;

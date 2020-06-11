@@ -36,15 +36,18 @@ router.post('/search', async function (req, res) {
 router.get('/details', async function (req, res) {
   var categories = await CategoryDAO.selectAll();
   var _id = req.query.id; // /details?id=XXX
-  var product = await ProductDAO.selectByID(_id);
-  var comment = await CommentDAO.SelectAll();
+  var product = await ProductDAO.selectByID(_id); 
+  var comment = await CommentDAO.selectByProdID(_id);
   var question = await QuestionDAO.SelectAll();
+  var checkbuyproduct = false;
+
   if (req.session.customer){
-  var check = await OrderDAO.check(req.session.customer._id, _id);
+    var cust = req.session.customer.username;
+    checkbuyproduct = await OrderDAO.check(req.session.customer._id, _id);
   } else {
-    var check = false;
+    checkbuyproduct = false;
   }
-  res.render('../views/customer/details.ejs', { prod: product, cats: categories, comments: comment, questions: question, check: check });
+  res.render('../views/customer/details.ejs', { prod: product, cats: categories, comments: comment, questions: question, checkbuyproduct: checkbuyproduct, cust: cust });
 });
 // customer
 router.get('/signup', async function (req, res) {
@@ -212,5 +215,39 @@ router.get('/becomeadmin', async function (req,res) {
     MyUtil.showAlertAndRedirect(res, 'FAILED!', './myprofile');
   }
 });
+// comments
+router.post('/addcomment', async function (req,res){
+  if (req.session.customer){
+    var _id = req.query.id; // /details?id=XXX
+    var product = await ProductDAO.selectByID(_id);
+    var customer = req.session.customer.username;
+    var comment = req.body.txtComment;
+    var comments = {comment: comment, product: product, customer: customer};
+    var result = await CommentDAO.insert(comments);
+    if (result){
+      MyUtil.showAlertAndRedirect(res, 'ADD COMMENT SUCCESSFULLY', '../details/?id='+req.query.id);
+    } else{
+      MyUtil.showAlertAndRedirect(res, 'ADD COMMENT FAILED', '../details/?id='+req.query.id);
+    }
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/editcomment', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id;
+    var comment = req.body.txtComment;
+    var comments = await CommentDAO.selectByID(_id);
+    var result = await CommentDAO.update(_id, comment);
+    if (result){
+      MyUtil.showAlertAndRedirect(res, 'EDIT COMMENT SUCCESSFULLY', '../details/?id='+comments.product._id);
+    } else{
+      MyUtil.showAlertAndRedirect(res, 'EDIT COMMENT FAILED', '../details/?id='+comments.product._id);
+    }
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+// questions
 
 module.exports = router;

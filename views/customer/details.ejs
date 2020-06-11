@@ -43,15 +43,50 @@
         
       </figcaption>
     </figure>
+    <h2 class="text-center">COMMENTS</h2>
     <form>
+      <%if (checkbuyproduct) { %>
+          <input type="text" name="txtComment" id="txtComment">
+          <input type="submit" value="POST COMMENT" formaction="./addcomment/?id=<%=prod._id%>" formmethod="POST">
+          <% } %>
           <table>
-            <h2 class="text-center">PRODUCT DETAILS</h2>
+            <%for (var comm of comments) {  %>
+            <tr>
+              <form>
+                <td><%=comm.customer%>:</td>
+                <%if (cust == comm.customer) { %>
+                  <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
+                  <td><input type="submit" value="edit comment" formaction="./editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                <% } else { %>
+                  <td><input type="text" value="<%=comm.comment%>" readonly></td>
+                <% } %>
+              </form>
+            </tr>
+            <% } %>
           </table>
-        </form>
-  </div>
-  <form>
-    
+    </form>
+    <h2 class="text-center">QUESTION</h2>
+    <form>
+      <input type="text" name="txtComment" id="txtComment">
+      <input type="submit" value="POST COMMENT" formaction="./addcomment/?id=<%=prod._id%>" formmethod="POST">
+      <table>
+        <%for (var comm of comments) {  %>
+        <tr>
+          <form>
+            <td><%=comm.customer%>:</td>
+            <%if (cust == comm.customer) { %>
+              <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
+              <td><input type="submit" value="edit comment" formaction="./editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
+            <% } else { %>
+              <td><input type="text" value="<%=comm.comment%>" readonly></td>
+            <% } %>
+          </form>
+        </tr>
+        <% } %>
+      </table>
   </form>
+  </div>
+  
   <%- include('./_footer.ejs') %>
 </body>
 

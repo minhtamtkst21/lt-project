@@ -10,13 +10,13 @@ var transporter = nodemailer.createTransport({
 });
 var EmailUtil = {
   send(email, id, token) {
-    var text = 'Thanks for signing up! Please click this link to activate your account:\n';
+    var text = 'Cảm ơn bạn đã đăng kí! Vui lòng nhấn vào link bên dưới để xác thực tài khoản:\n';
     text += 'http://' + MyConstants.HOSTNAME + '/verify?id=' + id + '&token=' + token;
     return new Promise(function (resolve, reject) {
       var mailOptions = {
         from: MyConstants.EMAIL_USER,
         to: email,
-        subject: 'Signup | Verification',
+        subject: 'Xác thực tài khoản LTShop',
         text: text
       };
       transporter.sendMail(mailOptions, function (err, result) {
