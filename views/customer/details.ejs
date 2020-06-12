@@ -10,7 +10,7 @@
   <div class="align-center">
     <h2 class="text-center">PRODUCT DETAILS</h2>
     <figure class="caption-right">
-      <img src="data:image/jpg;base64,<%=prod.image%>" width="400" height="400" />
+      <img src="data:image/jpg;base64,<%=prod.image%>" width="384" height="256" />
       <figcaption>
         <form action="./add2cart" method="POST">
           <table>
@@ -46,8 +46,8 @@
     <h2 class="text-center">COMMENTS</h2>
     <form>
       <%if (checkbuyproduct) { %>
-          <input type="text" name="txtComment" id="txtComment">
-          <input type="submit" value="POST COMMENT" formaction="./addcomment/?id=<%=prod._id%>" formmethod="POST">
+          <input type="text" name="txtComments" id="txtComment">
+          <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
           <% } %>
           <table>
             <%for (var comm of comments) {  %>
@@ -56,7 +56,8 @@
                 <td><%=comm.customer%>:</td>
                 <%if (cust == comm.customer) { %>
                   <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
-                  <td><input type="submit" value="edit comment" formaction="./editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                  <td><input type="submit" value="edit comment" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                  <td><input type="submit" value="delete comment" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
                 <% } else { %>
                   <td><input type="text" value="<%=comm.comment%>" readonly></td>
                 <% } %>
@@ -68,7 +69,7 @@
     <h2 class="text-center">QUESTION</h2>
     <form>
       <input type="text" name="txtComment" id="txtComment">
-      <input type="submit" value="POST COMMENT" formaction="./addcomment/?id=<%=prod._id%>" formmethod="POST">
+      <input type="submit" value="POST COMMENT" formaction="..addcomment/?id=<%=prod._id%>" formmethod="POST">
       <table>
         <%for (var comm of comments) {  %>
         <tr>

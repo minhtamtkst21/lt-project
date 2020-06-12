@@ -221,8 +221,9 @@ router.post('/addcomment', async function (req,res){
     var _id = req.query.id; // /details?id=XXX
     var product = await ProductDAO.selectByID(_id);
     var customer = req.session.customer.username;
-    var comment = req.body.txtComment;
-    var comments = {comment: comment, product: product, customer: customer};
+    var comment = req.body.txtComments;
+    var reply = "";
+    var comments = {comment: comment, product: product, customer: customer, reply: reply};
     var result = await CommentDAO.insert(comments);
     if (result){
       MyUtil.showAlertAndRedirect(res, 'ADD COMMENT SUCCESSFULLY', '../details/?id='+req.query.id);
@@ -244,6 +245,20 @@ router.post('/editcomment', async function (req, res){
     } else{
       MyUtil.showAlertAndRedirect(res, 'EDIT COMMENT FAILED', '../details/?id='+comments.product._id);
     }
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/deletecomment', async function (req,res){
+  if (req.session.customer){
+  var _id = req.query.id;
+  var comments = await CommentDAO.selectByID(_id);
+  var result = await CommentDAO.delete(_id);
+  if (result) {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', '../details/?id='+comments.product._id);
+  } else {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', '../details/?id='+comments.product._id);
+  }
   } else{
     MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
   }

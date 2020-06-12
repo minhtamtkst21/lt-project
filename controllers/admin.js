@@ -216,9 +216,28 @@ router.post('/myprofile', async function (req, res) {
   MyUtil.showAlertAndRedirect(res, 'SORRY BABY!', './myprofile');
 });
 // comment
-router.get('/listcomment', function (req,res){
-  
-  res.render('../views/admin/listcomment.ejs');
+router.get('/listcomment', async function (req,res){
+  var all = await CommentDAO.SelectAll();
+  var listcomment = await CommentDAO.selectByAdminname(req.session.admin.username);
+  res.render('../views/admin/listcomment.ejs', {listcomment: listcomment, all: all});
+});
+router.post('/deletecomment', async function (req,res){
+  var _id = req.body.txtID;
+  var result = await CommentDAO.delete(_id);
+  if (result) {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', './listcomment');
+  } else {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', './listcomment');
+  }
+});
+router.post('/replycomment', async function (req,res){
+  var _id = req.body.txtID;
+  var result = await CommentDAO.delete(_id);
+  if (result) {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', './listcomment');
+  } else {
+    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', './listcomment');
+  }
 });
 // question
 router.get('/listquestion', function (req,res){

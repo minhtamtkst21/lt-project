@@ -20,8 +20,8 @@ var CommentDAO = {
         var comments = await db.collection("comments").find(query).toArray();
         return comments;
     },
-    async selectByAdminID(_id) {
-        var query = { 'product._id': ObjectId(_pid) };
+    async selectByAdminname(admin) {
+        var query = { 'product.admin': admin };
         var db = await client.getDB();
         var comments = await db.collection("comments").find(query).toArray();
         return comments;
@@ -37,6 +37,12 @@ var CommentDAO = {
         var db = await client.getDB();
         var result = await db.collection("comments").updateOne(query, newvalues);
         return result.result.nModified > 0 ? true : false;
-    }
+    },
+    async delete(_id) {
+        var query = { _id: ObjectId(_id) };
+        var db = await client.getDB();
+        var result = await db.collection("comments").deleteOne(query);
+        return result.result.n > 0 ? true : false;
+      }
 }
 module.exports = CommentDAO;

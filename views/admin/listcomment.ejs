@@ -4,44 +4,53 @@
         <link href="/css/styles.css" type="text/css" rel="stylesheet" />
         <link href="/css/styles.css" type="text/css" rel="stylesheet" />
         <script>
-          function details(id, name, pass, per) {
+          function details(id, comm, cust, admin, reply) {
             document.getElementById("txtID").value = id;
-            document.getElementById("txtName").value = name;
-            document.getElementById("txtPass").value = pass;
-            document.getElementById("txtPer").value = per;
-            document.getElementById("btnReset").style.display = "inline";
-            document.getElementById("btnUpdate").style.display = "inline";
+            document.getElementById("txtComment").value = comm;
+            document.getElementById("txtCustomer").value = cust;
+            document.getElementById("txtAdmin").value = admin;
+            document.getElementById("txtReply").value = reply;
             document.getElementById("btnDelete").style.display = "inline";
+            document.getElementById("btnReply").style.display = "inline";
           }
         </script>
     </head>
     <body class="admin">
         <%- include('./_menu.ejs') %>
-        <div class="align-center">
-          <h2 class="text-center"><a href="./home">HOME</a></h2>
-        </div>
+        <%var per = session.admin.permission%>
         <div class="float-left">
             <h2 class="text-center">COMMENT LIST</h2>
             <table class="datatable" border="1">
                 <tr class="datatable">
                     <th>Id</th>
-                    <th>Username</th>
-                    <th>Permission</th>
-                    <th>Password</th>
+                    <th>comment</th>
+                    <th>Customer</th>
+                    <% if (per === "1") { %>
+                    <th>Admin</th>
+                    <% } %>
                 </tr>
-                  <%  for (var item of admin) {  %>
-                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.username%>', '<%=item.password%>', '<%=item.permission%>')">
+                <% if (per === "0") { %>
+                  <%  for (var item of listcomment) {  %>
+                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>')">
                     <td><%=item._id%></td>
-                    <td><%=item.username%></td>
-                    <td><%=item.permission%></td>
-                    <td>hiden</td>
+                    <td><%=item.comment%></td>
+                    <td><%=item.customer%></td>
+                    <td><%=item.reply%></td>
                   </tr>
-                  <%  } %>
+                  <%  } %> <% } else { %>
+                    <%  for (var item of all) {  %>
+                      <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>')">
+                        <td><%=item._id%></td>
+                        <td><%=item.comment%></td>
+                        <td><%=item.customer%></td>
+                        <td><%=item.product.admin%></td>
+                      </tr>
+                  <% } %> <% } %>
                 </table>
               </div>
               <div class="inline" style="width: 40px"></div>
               <div class="float-right">
-                <h2 class="text-center">ADMIN DETAIL</h2>
+                <h2 class="text-center">COMMENT DETAIL</h2>
                 <form method="POST">
                   <table>
                     <tr>
@@ -49,27 +58,29 @@
                       <td><input type="text" id="txtID" name="txtID" readonly /></td>
                     </tr>
                     <tr>
-                      <td>Username</td>
-                      <td><input type="text" id="txtName" name="txtName" required />
+                      <td>Comment</td>
+                      <td><input type="text" id="txtComment" name="txtComment" readonly />
                       </td>
                     </tr>
                     <tr>
-                      <td>Password</td>
-                      <td><input type="password" id="txtPass" name="txtPass" required />
+                      <td>Customer</td>
+                      <td><input type="text" id="txtCustomer" name="txtCustomer" readonly />
                       </td>
                     </tr>
+                    <% if (per === "1") { %>
                     <tr>
-                      <td>Permission</td>
-                      <td><input type="number" id="txtPer" name="txtPer" required max="1" min="-1" />
-                      </td>
+                      <td>Admin</td>
+                      <td><input type="text" name="txtAdmin" id="txtAdmin" readonly></td>
                     </tr>
+                    <% } %>
                     <tr>
                       <td></td>
                       <td>
-                        <input type="submit" formaction="./addadmin" value="ADD NEW" />
-                        <input type="submit" formaction="./resetadmin" value="RESET" id="btnReset" style="display: none" />
-                        <input type="submit" formaction="./updateadmin" value="UPDATE" id="btnUpdate" style="display: none">
-                        <input type="submit" formaction="./deleteadmin" value="DELETE" id="btnDelete" style="display: none" onclick="return confirm('ARE YOU SURE?')" />
+                        <% if (per === "1") { %>
+                        <input type="submit" formaction="./deletecomment" value="DELETE" id="btnDelete" style="display: none" onclick="return confirm('ARE YOU SURE?')" />
+                        <% } else { %>
+                        <input type="submit" formaction="./replycomment" value="REPLY" id="btnReply" style="display: none" />
+                        <% } %>
                       </td>
                     </tr>
                   </table>

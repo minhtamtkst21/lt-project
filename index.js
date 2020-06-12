@@ -7,7 +7,7 @@ app.use(express.static('public'));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 var session = require('express-session');
-app.use(session({ secret: "sonkk@123" }));
+app.use(session({ secret: "lt_shop" }));
 app.use(function (req, res, next) { // this middleware makes templates accessible session variables
   res.locals.session = req.session;
   next();
