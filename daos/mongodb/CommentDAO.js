@@ -38,6 +38,13 @@ var CommentDAO = {
         var result = await db.collection("comments").updateOne(query, newvalues);
         return result.result.nModified > 0 ? true : false;
     },
+    async reply(_id, reply){
+        var query = { _id: ObjectId(_id) };
+        var newvalues = { $set: { reply: reply } };
+        var db = await client.getDB();
+        var result = await db.collection("comments").updateOne(query, newvalues);
+        return result.result.nModified > 0 ? true : false;
+    },
     async delete(_id) {
         var query = { _id: ObjectId(_id) };
         var db = await client.getDB();

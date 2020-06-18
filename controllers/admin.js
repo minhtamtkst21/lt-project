@@ -86,7 +86,6 @@ router.post('/deletecategory', async function (req, res) {
 // product
 router.get('/listproduct', async function (req, res) {
   // get data
-  var admin = req.body.txtUsername;
   var categories = await CategoryDAO.selectAll();
   var products = await ProductDAO.selectAll();
   // pagination
@@ -218,8 +217,7 @@ router.post('/myprofile', async function (req, res) {
 // comment
 router.get('/listcomment', async function (req,res){
   var all = await CommentDAO.SelectAll();
-  var listcomment = await CommentDAO.selectByAdminname(req.session.admin.username);
-  res.render('../views/admin/listcomment.ejs', {listcomment: listcomment, all: all});
+  res.render('../views/admin/listcomment.ejs', {all: all});
 });
 router.post('/deletecomment', async function (req,res){
   var _id = req.body.txtID;
@@ -227,16 +225,17 @@ router.post('/deletecomment', async function (req,res){
   if (result) {
     MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', './listcomment');
   } else {
-    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', './listcomment');
+    MyUtil.showAlertAndRedirect(res, _id, './listcomment');
   }
 });
 router.post('/replycomment', async function (req,res){
   var _id = req.body.txtID;
-  var result = await CommentDAO.delete(_id);
+  var reply = req.body.txtReply;
+  var result = await CommentDAO.reply(_id, reply);
   if (result) {
-    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', './listcomment');
+    MyUtil.showAlertAndRedirect(res, 'REPLY COMMENT SUCCESSFULLY!', './listcomment');
   } else {
-    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', './listcomment');
+    MyUtil.showAlertAndRedirect(res, 'REPLY COMMENT FAILED!', './listcomment');
   }
 });
 // question

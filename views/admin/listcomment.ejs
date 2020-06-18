@@ -2,16 +2,18 @@
     <head>
         <title>COMMENT</title>
         <link href="/css/styles.css" type="text/css" rel="stylesheet" />
-        <link href="/css/styles.css" type="text/css" rel="stylesheet" />
         <script>
-          function details(id, comm, cust, admin, reply) {
+          function details(id, comm, cust, admin, reply, per) {
             document.getElementById("txtID").value = id;
             document.getElementById("txtComment").value = comm;
             document.getElementById("txtCustomer").value = cust;
-            document.getElementById("txtAdmin").value = admin;
             document.getElementById("txtReply").value = reply;
+            if (per === "1"){
             document.getElementById("btnDelete").style.display = "inline";
+            document.getElementById("txtAdmin").value = admin;
+            } else {
             document.getElementById("btnReply").style.display = "inline";
+            }
           }
         </script>
     </head>
@@ -28,24 +30,21 @@
                     <% if (per === "1") { %>
                     <th>Admin</th>
                     <% } %>
+                    <th>Reply</th>
                 </tr>
-                <% if (per === "0") { %>
-                  <%  for (var item of listcomment) {  %>
-                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>')">
+                  <%  for (var item of all) {  %>
+                    <% if (per === "1" || session.admin.username === item.product.admin) { %> 
+                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>', '<%=per%>')">
                     <td><%=item._id%></td>
                     <td><%=item.comment%></td>
                     <td><%=item.customer%></td>
+                    <% if (per === "1") { %>
+                    <td><%=item.product.admin%></td>
+                    <% } %>
                     <td><%=item.reply%></td>
                   </tr>
-                  <%  } %> <% } else { %>
-                    <%  for (var item of all) {  %>
-                      <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>')">
-                        <td><%=item._id%></td>
-                        <td><%=item.comment%></td>
-                        <td><%=item.customer%></td>
-                        <td><%=item.product.admin%></td>
-                      </tr>
-                  <% } %> <% } %>
+                  <% } %>
+                  <% } %>
                 </table>
               </div>
               <div class="inline" style="width: 40px"></div>
@@ -67,6 +66,14 @@
                       <td><input type="text" id="txtCustomer" name="txtCustomer" readonly />
                       </td>
                     </tr>
+                    <tr>
+                      <td>Replay</td>
+                      <% if (per === "1") { %>
+                        <td><input type="text" name="txtReply" id="txtReply" readonly></td>
+                      <% } else { %>
+                        <td><input type="text" name="txtReply" id="txtReply"></td>
+                      <% } %>
+                    </tr>
                     <% if (per === "1") { %>
                     <tr>
                       <td>Admin</td>
@@ -77,9 +84,9 @@
                       <td></td>
                       <td>
                         <% if (per === "1") { %>
-                        <input type="submit" formaction="./deletecomment" value="DELETE" id="btnDelete" style="display: none" onclick="return confirm('ARE YOU SURE?')" />
+                        <input type="submit" id="btnDelete" formaction="./deletecomment" value="DELETE"  style="display: none" onclick="return confirm('ARE YOU SURE?')" />
                         <% } else { %>
-                        <input type="submit" formaction="./replycomment" value="REPLY" id="btnReply" style="display: none" />
+                        <input type="submit" id="btnReply" formaction="./replycomment" value="REPLY" style="display: none"/>
                         <% } %>
                       </td>
                     </tr>

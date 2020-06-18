@@ -49,15 +49,49 @@
           <input type="text" name="txtComments" id="txtComment">
           <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
           <% } %>
+            <%for (var comm of comments) {  %>
+              <table class="text-center">
+            <tr>
+              <form>
+                <td><%=comm.customer%>:</td>
+                <%if (cust == comm.customer) { %>
+                  <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
+                  <tr>
+                    <td></td>
+                    <td ><input type="submit" value="&#xf040;" class="fa fa-pencil" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></i>
+                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                </tr>
+                <% } else { %>
+                  <td><input type="text" value="<%=comm.comment%>" readonly></td>
+                <% } %>
+              </form>
+            </tr>
+          </table>
           <table>
+            <form>
+              <tr>
+                <td><input type="text" name="txtReply" id="txtReply" value="Reply: <%=comm.reply%>" readonly></td>
+              </tr>
+            </form>
+          </table>
+        <% } %>
+    </form>
+    <h2 class="text-center">QUESTION</h2>
+    <form>
+          <input type="text" name="txtComments" id="txtComment">
+          <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
+          <table class="text-center">
             <%for (var comm of comments) {  %>
             <tr>
               <form>
                 <td><%=comm.customer%>:</td>
                 <%if (cust == comm.customer) { %>
                   <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
-                  <td><input type="submit" value="edit comment" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
-                  <td><input type="submit" value="delete comment" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                  <tr>
+                    <td></td>
+                    <td ><input type="submit" value="&#xf040;" class="fa fa-pencil" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></i>
+                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                </tr>
                 <% } else { %>
                   <td><input type="text" value="<%=comm.comment%>" readonly></td>
                 <% } %>
@@ -66,26 +100,6 @@
             <% } %>
           </table>
     </form>
-    <h2 class="text-center">QUESTION</h2>
-    <form>
-      <input type="text" name="txtComment" id="txtComment">
-      <input type="submit" value="POST COMMENT" formaction="..addcomment/?id=<%=prod._id%>" formmethod="POST">
-      <table>
-        <%for (var comm of comments) {  %>
-        <tr>
-          <form>
-            <td><%=comm.customer%>:</td>
-            <%if (cust == comm.customer) { %>
-              <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
-              <td><input type="submit" value="edit comment" formaction="./editcomment/?id=<%=comm._id%>" formmethod="POST"></td>
-            <% } else { %>
-              <td><input type="text" value="<%=comm.comment%>" readonly></td>
-            <% } %>
-          </form>
-        </tr>
-        <% } %>
-      </table>
-  </form>
   </div>
   
   <%- include('./_footer.ejs') %>

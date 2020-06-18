@@ -241,9 +241,9 @@ router.post('/editcomment', async function (req, res){
     var comments = await CommentDAO.selectByID(_id);
     var result = await CommentDAO.update(_id, comment);
     if (result){
-      MyUtil.showAlertAndRedirect(res, 'EDIT COMMENT SUCCESSFULLY', '../details/?id='+comments.product._id);
+      res.redirect('../details/?id='+comments.product._id);
     } else{
-      MyUtil.showAlertAndRedirect(res, 'EDIT COMMENT FAILED', '../details/?id='+comments.product._id);
+      res.redirect('../details/?id='+comments.product._id);
     }
   } else{
     MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
