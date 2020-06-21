@@ -40,7 +40,7 @@ router.get('/details', async function (req, res) {
   var _id = req.query.id; // /details?id=XXX
   var product = await ProductDAO.selectByID(_id); 
   var comment = await CommentDAO.selectByProdID(_id);
-  var question = await QuestionDAO.SelectAll();
+  var question = await QuestionDAO.selectByProdID(_id);
   var rates = await RateDAO.selectByProduct(_id);
   var rating = 0;
   var checkbuyproduct = false;
