@@ -1,0 +1,15 @@
+Customer có sẵn:
+tk:tam, mk:123
+Customer có thể tự tạo thêm
+*--------------------------*
+Admin có sẵn:
+Quyền 1:
+tk: t, mk: 123;
+Quyền 0:
+tk: admin1, mk:123;
+Quyền -1:
+tk: tam, mk:123
+Quyền -1 có thể tự tạo trong giao diện customer
+*--------------------------*
+Master có sẵn:
+tk: tamminh, mk: 14009
