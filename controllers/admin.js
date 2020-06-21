@@ -239,7 +239,27 @@ router.post('/replycomment', async function (req,res){
   }
 });
 // question
-router.get('/listquestion', function (req,res){
-  res.render('../views/admin/listquestion.ejs');
+router.get('/listquestion', async function (req,res){
+  var all = await QuestionDAO.SelectAll();
+  res.render('../views/admin/listquestion.ejs', {all: all});
+});
+router.post('/deletequestion', async function (req,res){
+  var _id = req.body.txtID;
+  var result = await QuestionDAO.delete(_id);
+  if (result) {
+    MyUtil.showAlertAndRedirect(res, 'DELETE QUESTION SUCCESSFULLY!', './listquestion');
+  } else {
+    MyUtil.showAlertAndRedirect(res, 'DELETE QUESTION FAILED', './listquestion');
+  }
+});
+router.post('/answer', async function (req,res){
+  var _id = req.body.txtID;
+  var answer = req.body.txtAnswer;
+  var result = await QuestionDAO.answer(_id, answer);
+  if (result) {
+    MyUtil.showAlertAndRedirect(res, 'REPLY QUESTION SUCCESSFULLY!', './listquestion');
+  } else {
+    MyUtil.showAlertAndRedirect(res, 'REPLY QUESTION FAILED!', './listquestion');
+  }
 });
 module.exports = router;

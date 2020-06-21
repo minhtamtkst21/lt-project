@@ -12,11 +12,20 @@
     <figure class="caption-right">
       <img src="data:image/jpg;base64,<%=prod.image%>" width="384" height="256" />
       <figcaption>
-        <form action="./add2cart" method="POST">
+        <form action="../add2cart" method="POST">
           <table>
             <tr>
-              <td align="right">ID:</td>
-              <td><%=prod._id%></td>
+              <% if (checklike) { %>
+                <input type="hidden" name="txtLikeId" id="txtLikeId" value="<%=clike._id%>">
+                <td align="right"><input type="submit" value="&#xf004;" class="fa fa-heart" formaction="../unlike/?id=<%=prod._id%>"></td>
+                <% } else { %> 
+                <td align="right"><input type="submit" value="&#xf08a;" class="fa fa-heart-o" formaction="../like/?id=<%=prod._id%>"></td>
+                <% } %>
+              <td>Add list favourite</td>
+            </tr>
+            <tr>
+              <td align="right"><%=countlike%></td>
+              <td> liked product</td>
             <tr>
             <tr>
               <td align="right">Name:</td>
@@ -31,12 +40,16 @@
               <td><%=prod.category.name%></td>
             <tr>
             <tr>
+              <td align="right">Rate:</td>
+              <td><%=rating%></td>
+            <tr>
+            <tr>
               <td align="right">Quantity:</td>
               <td><input type="number" name="txtQuantity" value="1" min="1" max="99" required /></td>
             <tr>
             <tr>
               <td><input type="hidden" name="txtID" value="<%=prod._id%>" /></td>
-              <td><input type="submit" value="ADD TO CART" /></td>
+              <td><input type="submit" value="&#xf067; CART" class="fa fa-plus" /></td>
             </tr>
           </table>
         </form>
@@ -46,8 +59,17 @@
     <h2 class="text-center">COMMENTS</h2>
     <form>
       <%if (checkbuyproduct) { %>
-          <input type="text" name="txtComments" id="txtComment">
-          <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
+        <input type="number" name="txtRating" id="txtRating" value="10" min="1" max="10">
+        <%if (checkrating) { %>
+          <input type="hidden" value="<%=crate._id%>" name="txtRateId">
+          <input type="submit" value="RATING" formaction="../updaterating/?id=<%=prod._id%>" formmethod="POST">
+        <% } else { %>
+        <input type="submit" value="RATING" formaction="../rating/?id=<%=prod._id%>" formmethod="POST">
+        <% } %>
+        <br/>
+        <br/>
+        <input type="text" name="txtComments" id="txtComment">
+        <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
           <% } %>
             <%for (var comm of comments) {  %>
               <table class="text-center">
@@ -59,7 +81,7 @@
                   <tr>
                     <td></td>
                     <td ><input type="submit" value="&#xf040;" class="fa fa-pencil" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></i>
-                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST" onclick="return confirm('ARE YOU SURE?')"></td>
                 </tr>
                 <% } else { %>
                   <td><input type="text" value="<%=comm.comment%>" readonly></td>
@@ -78,30 +100,36 @@
     </form>
     <h2 class="text-center">QUESTION</h2>
     <form>
-          <input type="text" name="txtComments" id="txtComment">
-          <input type="submit" value="POST COMMENT" formaction="../addcomment/?id=<%=prod._id%>" formmethod="POST">
-          <table class="text-center">
-            <%for (var comm of comments) {  %>
+          <input type="text" name="txtQuestions" id="txtQuestion">
+          <input type="submit" value="POST QUESTION" formaction="../addquestion/?id=<%=prod._id%>" formmethod="POST">
+            <%for (var ques of questions) {  %>
+              <table class="text-center">
             <tr>
               <form>
-                <td><%=comm.customer%>:</td>
-                <%if (cust == comm.customer) { %>
-                  <td><input type="text" name="txtComment" id="txtComment" value="<%=comm.comment%>"></td>
+                <td><%=ques.customer%>:</td>
+                <%if (cust == ques.customer) { %>
+                  <td><input type="text" name="txtQuestion" id="txtQuestion" value="<%=ques.question%>"></td>
                   <tr>
                     <td></td>
-                    <td ><input type="submit" value="&#xf040;" class="fa fa-pencil" formaction="../editcomment/?id=<%=comm._id%>" formmethod="POST"></i>
-                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletecomment/?id=<%=comm._id%>" formmethod="POST"></td>
+                    <td ><input type="submit" value="&#xf040;" class="fa fa-pencil" formaction="../editquestion/?id=<%=ques._id%>" formmethod="POST"></i>
+                      <input type="submit" value="&#xf1f8;" class="fa fa-trash" formaction="../deletequestion/?id=<%=ques._id%>" formmethod="POST" onclick="return confirm('ARE YOU SURE?')"></td>
                 </tr>
                 <% } else { %>
-                  <td><input type="text" value="<%=comm.comment%>" readonly></td>
+                  <td><input type="text" value="<%=ques.question%>" readonly></td>
                 <% } %>
               </form>
             </tr>
-            <% } %>
           </table>
+          <table>
+            <form>
+              <tr>
+                <td><input type="text" name="txtAnswer" id="txtAnswer" value="Answer: <%=ques.answer%>" readonly></td>
+              </tr>
+            </form>
+          </table>
+        <% } %>
     </form>
   </div>
-  
   <%- include('./_footer.ejs') %>
 </body>
 

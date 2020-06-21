@@ -3,9 +3,10 @@
         <title>COMMENT</title>
         <link href="/css/styles.css" type="text/css" rel="stylesheet" />
         <script>
-          function details(id, comm, cust, admin, reply, per) {
+          function details(id, comm, name, cust, admin, reply, per) {
             document.getElementById("txtID").value = id;
             document.getElementById("txtComment").value = comm;
+            document.getElementById("txtPName").value = name;
             document.getElementById("txtCustomer").value = cust;
             document.getElementById("txtReply").value = reply;
             if (per === "1"){
@@ -26,6 +27,7 @@
                 <tr class="datatable">
                     <th>Id</th>
                     <th>comment</th>
+                    <th>Product Name</th>
                     <th>Customer</th>
                     <% if (per === "1") { %>
                     <th>Admin</th>
@@ -34,9 +36,10 @@
                 </tr>
                   <%  for (var item of all) {  %>
                     <% if (per === "1" || session.admin.username === item.product.admin) { %> 
-                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>', '<%=per%>')">
+                  <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.comment%>','<%=item.product.name%>', '<%=item.customer%>', '<%=item.product.admin%>','<%=item.reply%>', '<%=per%>')">
                     <td><%=item._id%></td>
                     <td><%=item.comment%></td>
+                    <td><%=item.product.name%></td>
                     <td><%=item.customer%></td>
                     <% if (per === "1") { %>
                     <td><%=item.product.admin%></td>
@@ -60,6 +63,10 @@
                       <td>Comment</td>
                       <td><input type="text" id="txtComment" name="txtComment" readonly />
                       </td>
+                    </tr>
+                    <tr>
+                      <td>Product Name</td>
+                      <td><input type="text" name="txtPName" id="txtPName" readonly></td>
                     </tr>
                     <tr>
                       <td>Customer</td>

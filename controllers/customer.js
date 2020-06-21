@@ -13,6 +13,8 @@ var OrderDAO = require(pathDAO + "/OrderDAO.js");
 var AdminDAO = require(pathDAO + "/AdminDAO.js");
 var CommentDAO = require(pathDAO + "/CommentDAO.js");
 var QuestionDAO = require(pathDAO + "/QuestionDAO.js");
+var RateDAO = require(pathDAO + "/RateDAO.js");
+var LikeDAO = require(pathDAO + "/LikeDAO.js");
 // routes
 router.get(['/', '/home'], async function (req, res) {
   var categories = await CategoryDAO.selectAll();
@@ -39,15 +41,50 @@ router.get('/details', async function (req, res) {
   var product = await ProductDAO.selectByID(_id); 
   var comment = await CommentDAO.selectByProdID(_id);
   var question = await QuestionDAO.SelectAll();
+  var rates = await RateDAO.selectByProduct(_id);
+  var rating = 0;
   var checkbuyproduct = false;
-
+  var checkrating = false;
+  var checklike = false;
+  var crate = null;
+  var clike = null;
+  var like = await LikeDAO.selectByProduct(_id);
+  var countlike = like.length;
+  if (rates.length > 0) { 
+  for (var i of rates) {
+    rating = rating + i.rate;
+  }
+    rating = (rating / rates.length).toFixed(1);
+  }
   if (req.session.customer){
     var cust = req.session.customer.username;
     checkbuyproduct = await OrderDAO.check(req.session.customer._id, _id);
-  } else {
-    checkbuyproduct = false;
+    for (var i of rates) {
+      if (i.customer === req.session.customer._id) {
+      crate = i;
+      checkrating = true;
+      break;
+      }
+    }
+    clike = await LikeDAO.check(req.session.customer._id, _id);
+    if (clike != null) {
+      checklike = true;
+    }
   }
-  res.render('../views/customer/details.ejs', { prod: product, cats: categories, comments: comment, questions: question, checkbuyproduct: checkbuyproduct, cust: cust });
+  res.render('../views/customer/details.ejs', {
+    prod: product, 
+    cats: categories, 
+    comments: comment, 
+    questions: question, 
+    checkbuyproduct: checkbuyproduct,
+    cust: cust,
+    crate: crate,
+    rating: rating,
+    clike: clike,
+    countlike: countlike,
+    checkrating: checkrating,
+    checklike: checklike
+  });
 });
 // customer
 router.get('/signup', async function (req, res) {
@@ -172,7 +209,7 @@ router.post('/add2cart', async function (req, res) {
   }
   req.session.mycart = mycart; // put mycart back into the session
   //console.log(req.session.mycart); // for DBUG
-  res.redirect('./home');
+  res.redirect('../details/?id='+_id);
 });
 router.get('/remove2cart', function (req, res) {
   if (req.session.mycart) {
@@ -225,11 +262,7 @@ router.post('/addcomment', async function (req,res){
     var reply = "";
     var comments = {comment: comment, product: product, customer: customer, reply: reply};
     var result = await CommentDAO.insert(comments);
-    if (result){
-      MyUtil.showAlertAndRedirect(res, 'ADD COMMENT SUCCESSFULLY', '../details/?id='+req.query.id);
-    } else{
-      MyUtil.showAlertAndRedirect(res, 'ADD COMMENT FAILED', '../details/?id='+req.query.id);
-    }
+      res.redirect('../details/?id='+req.query.id);
   } else{
     MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
   }
@@ -240,11 +273,7 @@ router.post('/editcomment', async function (req, res){
     var comment = req.body.txtComment;
     var comments = await CommentDAO.selectByID(_id);
     var result = await CommentDAO.update(_id, comment);
-    if (result){
       res.redirect('../details/?id='+comments.product._id);
-    } else{
-      res.redirect('../details/?id='+comments.product._id);
-    }
   } else{
     MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
   }
@@ -254,15 +283,93 @@ router.post('/deletecomment', async function (req,res){
   var _id = req.query.id;
   var comments = await CommentDAO.selectByID(_id);
   var result = await CommentDAO.delete(_id);
-  if (result) {
-    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT SUCCESSFULLY!', '../details/?id='+comments.product._id);
-  } else {
-    MyUtil.showAlertAndRedirect(res, 'DELETE COMMENT FAILED!', '../details/?id='+comments.product._id);
-  }
+  res.redirect('../details/?id='+comments.product._id);
   } else{
     MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
   }
 });
 // questions
-
+router.post('/addquestion', async function (req,res){
+  if (req.session.customer){
+    var _id = req.query.id; // /details?id=XXX
+    var product = await ProductDAO.selectByID(_id);
+    var customer = req.session.customer.username;
+    var question = req.body.txtQuestions;
+    var answer = "";
+    var questions = {question: question, product: product, customer: customer, answer: answer};
+    var result = await QuestionDAO.insert(questions);
+    res.redirect('../details/?id='+req.query.id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/editquestion', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id;
+    var question = req.body.txtQuestion;
+    var questions = await QuestionDAO.selectByID(_id);
+    var result = await QuestionDAO.update(_id, question);
+    res.redirect('../details/?id='+questions.product._id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/deletequestion', async function (req,res){
+  if (req.session.customer){
+  var _id = req.query.id;
+  var question = await QuestionDAO.selectByID(_id);
+  var result = await QuestionDAO.delete(_id);
+    res.redirect('../details/?id=' + question.product._id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+// ratings
+router.post('/rating', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id; // /details?id=XXX
+    var product = await ProductDAO.selectByID(_id);
+    var customer = req.session.customer._id;
+    var rating = parseInt(req.body.txtRating);
+    var rate = {product: product, customer: customer, rate: rating};
+    var result = await RateDAO.insert(rate);
+    res.redirect('../details/?id='+req.query.id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/updaterating', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id;
+    var rating = req.body.txtRating;
+    var rateid = req.body.txtRateId;
+    var result = await RateDAO.update(rateid, rating);
+    res.redirect('../details/?id='+_id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+// like
+router.post('/like', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id; // /details?id=XXX
+    var product = await ProductDAO.selectByID(_id);
+    var customer = req.session.customer._id;
+    var like = {product: product, customer: customer};
+    var result = await LikeDAO.insert(like);
+    res.redirect('../details/?id='+_id);
+  } else{
+    MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+  }
+});
+router.post('/unlike', async function (req, res){
+  if (req.session.customer){
+    var _id = req.query.id;
+    var like = req.body.txtLikeId;
+    var result = await LikeDAO.delete(like);
+      res.redirect('../details/?id=' + _id);
+    } else{
+      MyUtil.showAlertAndRedirect(res, 'PLEASE LOGIN', '../login');
+    }
+});
 module.exports = router;

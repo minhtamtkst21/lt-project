@@ -10,13 +10,15 @@
       reader.readAsDataURL(input.files[0]);
     }
     
-    function details(id, name, price, catID, image) {
+    function details(id, name, price, catID, image, per) {
       document.getElementById("txtID").value = id;
       document.getElementById("txtName").value = name;
       document.getElementById("txtPrice").value = price;
       document.getElementById("cmbCategory").value = catID;
       document.getElementById("imgProduct").src = "data:image/jpg;base64," + image;
+      if (per === "0") {
       document.getElementById("btnUpdate").style.display = "inline";
+      }
       document.getElementById("btnDelete").style.display = "inline";
     }
   </script>
@@ -41,7 +43,7 @@
       </tr>
       <%  for (var item of prods) {  %>
         <% if(item.admin === session.admin.username || per === "1") {%>
-      <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.name%>', '<%=item.price%>', '<%=item.category.id%>', '<%=item.image%>', '<%=item.admin%>')">
+      <tr class="datatable" onclick="details('<%=item._id%>', '<%=item.name%>', '<%=item.price%>', '<%=item.category.id%>', '<%=item.image%>', '<%=item.admin%>', '<%=per%>')">
         <th><%=item._id%></th>
         <td><%=item.name%></td>
         <td><%=item.price%>.000vnđ</td>
@@ -108,8 +110,10 @@
         <tr>
           <td></td>
           <td>
+            <% if (per === "0") { %>
             <input type="submit" formaction="./addproduct" value="&#xf067;" class="fa fa-plus" />
             <input type="submit" formaction="./updateproduct" value="&#xf040;" class="fa fa-pencil" id="btnUpdate" style="display: none" />
+            <% } %>
             <input type="submit" formaction="./deleteproduct" value="&#xf1f8;" class="fa fa-trash" id="btnDelete" style="display: none" onclick="return confirm('ARE YOU SURE?')" />
           </td>
         </tr>
