@@ -27,7 +27,8 @@ router.get('/listproduct', async function (req, res) {
   var categories = await CategoryDAO.selectAll();
   var _cid = req.query.catID; // /listproduct?catID=XXX
   var products = await ProductDAO.selectByCatID(_cid);
-  res.render('../views/customer/listproduct.ejs', { cats: categories, prods: products });
+  var pro = await CategoryDAO.selectByID(_cid);
+  res.render('../views/customer/listproduct.ejs', { cats: categories, prods: products, pro: pro });
 });
 router.post('/search', async function (req, res) {
   var categories = await CategoryDAO.selectAll();
